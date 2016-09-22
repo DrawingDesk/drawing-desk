@@ -1,5 +1,14 @@
-# Drawing desk
+# app
 
-[Requirements](https://drive.google.com/open?id=1Qpp-W35FGDZigJ-u0XAAeMOzso3H6DarmBQP-jiyg6A)
+A Clojure library designed to ... well, that part is up to you.
 
-//TODO LEV: Add repository description
+## Usage
+
+FIXME
+
+## License
+
+Copyright © 2016 FIXME
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.
