@@ -11,7 +11,7 @@
                  [compojure "1.5.1"]
                  [http-kit "2.2.0"]]
   :dev-depelendencies [[lein-cljsbuild "1.1.4"]
-                       [lein-ring "0.8.7"]]
+                       [lein-ring "0.9.7"]]
   :plugins [[lein-swank "1.4.4"]]
   :main drawing.main
   :cljsbuild {
@@ -20,5 +20,5 @@
                                    :optimizations :whitespace
                                    :pretty-print true}}]
               }
-  :ring {:handler a}
+  :ring {:handler drawing.main/-main}
   )
