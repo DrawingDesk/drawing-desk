@@ -4,15 +4,9 @@
         [clojure.data.json :only [json-str]]
         (compojure [core :only [defroutes GET POST]]
                    [handler :only [site]]
-                   [route :only [files not-found resources]])))
-
-(defn index-page [req]
-  {:status 200
-   :body "Hi, men!"})
-
-(defroutes main-routes
-           (GET "/" [] index-page)
-           (not-found "Page not found"))
+                   [route :only [files not-found resources]])
+        [drawing.routes :as routes]
+        [drawing.data.events :as events]))
 
 (defn- wrap-request-logging [handler]
   (fn [{:keys [request-method uri] :as req}]
@@ -23,5 +17,5 @@
       resp)))
 
 (defn -main [& args]
-  (run-server (-> #'main-routes site wrap-request-logging) {:port 9898})
-  (info "Server started on http://127.0.0.1:9898"))
+  (run-server (-> #'routes/app-routes site wrap-request-logging) {:port 9000})
+  (info "Server started on http://127.0.0.1:9000"))

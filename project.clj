@@ -9,16 +9,17 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [ring "1.5.0"]
                  [compojure "1.5.1"]
-                 [http-kit "2.2.0"]]
+                 [http-kit "2.2.0"]
+                 [com.novemberain/monger "3.1.0"]]
   :dev-depelendencies [[lein-cljsbuild "1.1.4"]
                        [lein-ring "0.9.7"]]
-  :plugins [[lein-swank "1.4.4"]]
   :main drawing.main
-  :cljsbuild {
-              :builds [{:source-paths ["src-cljs"]
-                        :compiler {:output-to "static/bundle.js"
-                                   :optimizations :whitespace
-                                   :pretty-print true}}]
-              }
-  :ring {:handler drawing.main/-main}
+  ;:cljsbuild {
+  ;            :builds [{:source-paths ["src-cljs"]
+  ;                      :compiler {:output-to "static/bundle.js"
+  ;                                 :optimizations :whitespace
+  ;                                 :pretty-print true}}]
+  ;            }
+  :ring {:handler drawing.main/-main
+         :uberwar-name "server.war"}
   )
