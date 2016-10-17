@@ -8,6 +8,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.3.1"]
                  [ring "1.5.0"]
+                 [ring/ring-json "0.4.0"]
                  [compojure "1.5.1"]
                  [http-kit "2.2.0"]
                  [com.novemberain/monger "3.1.0"]]

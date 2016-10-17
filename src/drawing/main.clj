@@ -2,11 +2,12 @@
   (:use org.httpkit.server
         [clojure.tools.logging :only [info]]
         [clojure.data.json :only [json-str]]
-        (compojure [core :only [defroutes GET POST]]
-                   [handler :only [site]]
+        (compojure [core :only [defroutes routes]]
+                   [handler :as handler]
                    [route :only [files not-found resources]])
-        [drawing.routes :as routes]
-        [drawing.data.events :as events]))
+        [drawing.routes :as app-routes]
+        [drawing.data.events :as events])
+  (:require [compojure.handler :as handler]))
 
 (defn- wrap-request-logging [handler]
   (fn [{:keys [request-method uri] :as req}]
@@ -16,6 +17,20 @@
               (str uri "?" qs) uri))
       resp)))
 
+(def app-site (handler/site app-routes/app-routes))
+
+(def app-api (handler/api app-routes/api-routes))
+
+(def app (routes app-api app-site))
+
+(defonce server (atom nil))
+
+(defn stop-server []
+  (when-not (nil? @server)
+    (@server :timeout 100)
+    (reset! server nil)))
+
 (defn -main [& args]
-  (run-server (-> #'routes/app-routes site wrap-request-logging) {:port 9000})
+  (reset! server
+          (run-server (-> #'app wrap-request-logging) {:port 9000}))
   (info "Server started on http://127.0.0.1:9000"))
