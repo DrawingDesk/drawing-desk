@@ -20,4 +20,6 @@
            (context "/api" []
              (GET "/register" [] (register/register-index))
              (POST "/register" [] (-wrap-post-requests register/register-room))
-             (GET "/events/:room-id" [room-id] (events/events-index room-id))))
+             (GET "/events/:room-id" [room-id] (events/events-index room-id))
+             (POST "/events/:room-id" [room-id] (-wrap-post-requests (fn [req]
+                                                                       (events/receive-event room-id req))))))
