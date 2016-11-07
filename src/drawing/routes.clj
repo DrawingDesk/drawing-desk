@@ -9,11 +9,11 @@
                    [handler :as handler]
                    [route :only [files not-found resources]])))
 
-(defn -wrap-post-requests [handler]
+(defn- -wrap-post-requests [handler]
   (wrap-json-body (fn [req]
                     (handler (-> req :body))) {:keywords? true :bigdecimals? true}))
 
-(defn -wrap-json-requests [handler]
+(defn- -wrap-json-requests [handler]
   (wrap-json-response handler {}))
 
 (defroutes app-routes

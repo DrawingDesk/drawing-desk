@@ -14,13 +14,10 @@
                  [com.novemberain/monger "3.1.0"]]
   :dev-depelendencies [[lein-cljsbuild "1.1.4"]
                        [lein-ring "0.9.7"]]
+  :plugins [[lein-ring "0.9.7"]]
   :main drawing.main
-  ;:cljsbuild {
-  ;            :builds [{:source-paths ["src-cljs"]
-  ;                      :compiler {:output-to "static/bundle.js"
-  ;                                 :optimizations :whitespace
-  ;                                 :pretty-print true}}]
-  ;            }
-  :ring {:handler drawing.main/-main
-         :uberwar-name "server.war"}
+  :ring {:handler drawing.main/app
+         :uberwar-name "server.war"
+         :auto-reload? true
+         :auto-refresh? true}
   )
