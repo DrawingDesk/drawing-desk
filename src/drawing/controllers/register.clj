@@ -6,7 +6,4 @@
   (r/response "Ok"))
 
 (defn register-room [req]
-  (let [room (-> req :room)]
-    (println room))
-  (println req)
   (r/response req))

@@ -1,11 +1,12 @@
-(ns drawing.utils.clock)
+(ns drawing.utils.clock
+  (:use [drawing.data.events-dao :as events-dao]))
 
 (def room-counters (agent {}))
 
 (defn- -create-new-room-clock [clocks room-id]
-  (println "Create new")
   (if (not (contains? clocks room-id))
-    (assoc clocks room-id (atom 0))))
+    (let [last-event (events-dao/get-last-event room-id)]
+      (assoc clocks room-id (atom (if (nil? (:sync-id last-event)) 0 (:sync-id last-event)))))))
 
 (defn- -get-or-create-room-clock [room-id]
   "Function return or create new vector clock for room"
@@ -17,5 +18,4 @@
 
 (defn next-value [room-id]
   "Function returns next Lamport clock value"
-  (println "Mocked func")
   (swap! (-get-or-create-room-clock room-id) inc))
