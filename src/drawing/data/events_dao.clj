@@ -6,6 +6,8 @@
 
 (defn insert-event [room-id event]
   "Function that insert new event and return inserted object"
+  (println "Foobar")
+  (println event)
   (provider/execute-query (fn [db]
                             (mc/insert-and-return db room-id event))))
 

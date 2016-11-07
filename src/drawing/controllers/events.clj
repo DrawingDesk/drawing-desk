@@ -3,11 +3,10 @@
         [ring.util.response :as r]))
 
 (defn events-index
-  ([room-id sync-id]
-    (r/response (events-blo/get-events room-id sync-id)))
   ([room-id]
-   (r/response (events-blo/get-events room-id))))
+   (r/response (events-blo/get-events room-id)))
+  ([room-id sync-id]
+   (r/response (events-blo/get-events room-id sync-id))))
 
 (defn receive-event [room-id event]
-  (events-blo/process-new-event room-id event)
-  (r/response event))
+  (r/response (events-blo/process-new-event room-id event)))
