@@ -6,7 +6,7 @@
                    [handler :as handler]
                    [route :only [files not-found resources]])
         [drawing.routes :as app-routes]
-        [drawing.data.events :as events])
+        [drawing.data.events-dao :as events])
   (:require [compojure.handler :as handler]))
 
 (defn- wrap-request-logging [handler]

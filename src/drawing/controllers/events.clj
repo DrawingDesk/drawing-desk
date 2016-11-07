@@ -1,10 +1,13 @@
 (ns drawing.controllers.events
-      (:use [ring.util.response :as r]))
+  (:use [drawing.logic.events-blo :as events-blo]
+        [ring.util.response :as r]))
 
-(defn events-index [room-id]
-      (println room-id)
-      (r/response room-id))
+(defn events-index
+  ([room-id sync-id]
+    (r/response (events-blo/get-events room-id sync-id)))
+  ([room-id]
+   (r/response (events-blo/get-events room-id))))
 
 (defn receive-event [room-id event]
-      (println room-id)
-      (println event))
+  (events-blo/process-new-event room-id event)
+  (r/response event))

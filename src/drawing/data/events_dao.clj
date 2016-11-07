@@ -1,6 +1,5 @@
-(ns drawing.data.events
+(ns drawing.data.events-dao
   (:use [drawing.data.provider :as provider]
-        [drawing.configuration :as config]
         [monger.collection :as mc]
         [monger.conversion :refer [from-db-object]]
         [monger.operators :refer :all]))
@@ -13,11 +12,11 @@
 (defn get-all-events [room-id]
   "Function returns all events from collection"
   (provider/execute-query (fn [db]
-                            (sort-by :id
+                            (sort-by :sync-id
                                      (mc/find-maps db room-id)))))
 
 (defn get-events-after [room-id event-id]
   "Function returns all events that occured after event with id event-id"
   (provider/execute-query (fn [db]
-                            (sort-by :id
-                                     (mc/find-maps db room-id {:id {"$gt" event-id}})))))
+                            (sort-by :sync-id
+                                     (mc/find-maps db room-id {:sync-id {"$gt" event-id}})))))
