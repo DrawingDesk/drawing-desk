@@ -6,7 +6,8 @@
                    [handler :as handler]
                    [route :only [files not-found resources]])
         [drawing.routes :as app-routes]
-        [drawing.data.events-dao :as events])
+        [drawing.data.events-dao :as events]
+        [ring.middleware.cors :refer :all])
   (:require [compojure.handler :as handler]))
 
 (defn- wrap-request-logging [handler]
@@ -21,7 +22,9 @@
 
 (def app-api (handler/api app-routes/api-routes))
 
-(def app (routes app-api app-site))
+(def app
+  (wrap-cors (routes app-api app-site) :access-control-allow-origin [#"http://localhost:3449"]
+             :access-control-allow-methods [:get :put :post :delete]))
 
 (defonce server (atom nil))
 
