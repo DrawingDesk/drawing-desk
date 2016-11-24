@@ -1,30 +1,29 @@
 (ns drawing.routes
-  (:use [drawing.controllers.home :as home]
-        [drawing.controllers.register :as register]
-        [drawing.controllers.events :as events]
-        [drawing.models.event]
-        [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-        [ring.middleware.json :only [wrap-json-body wrap-json-response]]
-        (compojure [core :only [defroutes GET POST ANY context]]
-                   [handler :as handler]
-                   [route :only [files not-found resources]])))
-
-(defn- -wrap-post-requests [handler]
-  (wrap-json-body (fn [req]
-                    (handler (-> req :body))) {:keywords? true :bigdecimals? true}))
-
-(defn- -wrap-json-requests [handler]
-  (wrap-json-response handler {}))
+   (:use [drawing.controllers.home :as home]
+         [drawing.controllers.auth :as auth]
+         [drawing.controllers.events :as events]
+         [drawing.models.event]
+         [drawing.models.auth]
+         [drawing.models.user]
+         [drawing.utils.security :as security]
+         (compojure [core :only [defroutes GET POST ANY context]]
+                    [route :only [files not-found resources]])))
 
 (defroutes app-routes
            (GET "/" [] (home/home-index))
+           (POST "/sign-in" [] (fn [req] (auth/login (map->Auth (:body req)))))
+           (POST "/sign-up" [] (fn [req] (auth/register (map->User (:body req)))))
+           (POST "/refresh" [] (security/wrap-authentificated? (fn [req] (auth/refresh))))
            (not-found "Page not found"))
+
+(defroutes secured-api-routes
+           (GET "/events/:room-id" [room-id] (fn [req]
+                                               (events/events-index room-id)))
+           (GET "/events/:room-id/:sync" [room-id sync] (fn [req]
+                                                          (events/events-index room-id sync)))
+           (POST "/events/:room-id" [room-id] (fn [req]
+                                                (events/receive-event room-id (map->Event (:body req))))))
 
 (defroutes api-routes
            (context "/api" []
-             (GET "/register" [] (-wrap-json-requests (fn [req](register/register-index))))
-             (POST "/register" [] (-wrap-post-requests register/register-room))
-             (GET "/events/:room-id" [room-id] (-wrap-json-requests (fn [req](events/events-index room-id))))
-             (GET "/events/:room-id/:sync" [room-id sync] (-wrap-json-requests (fn [req](events/events-index room-id sync))))
-             (POST "/events/:room-id" [room-id] (-wrap-json-requests (-wrap-post-requests (fn [req]
-                                                                                            (events/receive-event room-id (map->Event req))))))))
+             (security/wrap-authentificated? secured-api-routes)))

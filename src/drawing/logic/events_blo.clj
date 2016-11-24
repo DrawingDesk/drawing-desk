@@ -1,6 +1,7 @@
 (ns drawing.logic.events-blo
   (:use [drawing.data.events-dao :as event-dao]
         [drawing.models.event]
+        [drawing.utils.security :only [principal]]
         [drawing.utils.clock :as clock]))
 
 (defn- -prepare-entity [entity]
@@ -13,7 +14,7 @@
 
 
 (defn process-new-event [room-id event]
-  (map->Event (-prepare-entity (event-dao/insert-event room-id (assoc event :sync-id (clock/next-value room-id))))))
+  (map->Event (-prepare-entity (event-dao/insert-event room-id (assoc event :sync-id (clock/next-value room-id) :user-id (:id (:user (:identity @@principal))))))))
 
 (defn get-events
   "Return room events"

@@ -1,30 +1,38 @@
 (ns drawing.main
   (:use org.httpkit.server
-        [clojure.tools.logging :only [info]]
-        [clojure.data.json :only [json-str]]
-        (compojure [core :only [defroutes routes]]
-                   [handler :as handler]
-                   [route :only [files not-found resources]])
-        [drawing.routes :as app-routes]
-        [drawing.data.events-dao :as events]
-        [ring.middleware.cors :refer :all])
-  (:require [compojure.handler :as handler]))
+            [clojure.tools.logging :only [info]]
+            [clojure.data.json :only [json-str]]
+            (compojure [core :only [defroutes routes]]
+                       [handler :as handler]
+                       [route :only [files not-found resources]])
+            [drawing.routes :as app-routes]
+            [drawing.utils.security :as security]
+            [drawing.utils.request :as request]
+            [ring.middleware.cors :refer :all]
+            [buddy.auth.middleware]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [compojure.handler :as handler]))
 
 (defn- wrap-request-logging [handler]
-  (fn [{:keys [request-method uri] :as req}]
-    (let [resp (handler req)]
-      (info (name request-method) (:status resp)
-            (if-let [qs (:query-string req)]
-              (str uri "?" qs) uri))
-      resp)))
+  (fn [req]
+    (println req)
+    (handler req)))
 
 (def app-site (handler/site app-routes/app-routes))
 
 (def app-api (handler/api app-routes/api-routes))
 
+
 (def app
-  (wrap-cors (routes app-api app-site) :access-control-allow-origin [#"http://localhost:3449"]
-             :access-control-allow-methods [:get :put :post :delete]))
+  (-> (routes app-api app-site)
+      (security/wrap-user)
+      (wrap-request-logging)
+      (wrap-authorization security/auth-backend)
+      (wrap-authentication security/auth-backend)
+      (request/wrap-post-requests)
+      (request/wrap-json-requests)
+      (request/wrap-cors-request)))
+
 
 (defonce server (atom nil))
 
@@ -35,5 +43,5 @@
 
 (defn -main [& args]
   (reset! server
-          (run-server (-> #'app wrap-request-logging) {:port 9000}))
+          (run-server app {:port 9000}))
   (info "Server started on http://127.0.0.1:9000"))

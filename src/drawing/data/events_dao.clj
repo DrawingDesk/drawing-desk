@@ -21,7 +21,6 @@
 (defn get-events-after [room-id sync-id]
   "Function returns all events that occured after event with id sync-id"
   (provider/execute-query (fn [db]
-                            (println room-id sync-id)
                             (sort-by :sync-id
                                      (find-maps db room-id {:sync-id {"$gt" (read-string sync-id)}})))))
 (defn get-last-event [room-id]

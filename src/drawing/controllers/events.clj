@@ -4,8 +4,10 @@
 
 (defn events-index
   ([room-id]
+   "Get all events controller action"
    (r/response (events-blo/get-events room-id)))
   ([room-id sync-id]
+   "Get all events after events with sync-id controller action"
    (r/response (events-blo/get-events room-id sync-id))))
 
 (defn receive-event [room-id event]

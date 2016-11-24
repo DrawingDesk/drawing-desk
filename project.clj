@@ -12,6 +12,8 @@
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.1"]
                  [http-kit "2.2.0"]
+                 [buddy "1.2.0"]
+                 [clj-time "0.12.2"]
                  [com.novemberain/monger "3.1.0"]]
   :dev-depelendencies [[lein-cljsbuild "1.1.4"]
                        [lein-ring "0.9.7"]]
