@@ -6,7 +6,7 @@
          [drawing.models.auth]
          [drawing.models.user]
          [drawing.utils.security :as security]
-         (compojure [core :only [defroutes GET POST ANY context]]
+         (compojure [core :only [defroutes GET POST ANY PATCH context]]
                     [route :only [files not-found resources]])))
 
 (defroutes app-routes
@@ -22,7 +22,10 @@
            (GET "/events/:room-id/:sync" [room-id sync] (fn [req]
                                                           (events/events-index room-id sync)))
            (POST "/events/:room-id" [room-id] (fn [req]
-                                                (events/receive-event room-id (map->Event (:body req))))))
+                                                (events/receive-event room-id (map->Event (:body req)))))
+           (POST "/events/:room-id/:id" [room-id id] (fn [req]
+                                                        (println req)
+                                                        (events/patch-event room-id id (:body req)))))
 
 (defroutes api-routes
            (context "/api" []

@@ -12,3 +12,6 @@
 
 (defn receive-event [room-id event]
   (r/response (events-blo/process-new-event room-id event)))
+
+(defn patch-event [room-id sync-id data]
+  (r/response (events-blo/apply-event-update room-id sync-id data)))

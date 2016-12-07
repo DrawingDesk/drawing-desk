@@ -2,7 +2,8 @@
   (:use [drawing.data.events-dao :as event-dao]
         [drawing.models.event]
         [drawing.utils.security :only [principal]]
-        [drawing.utils.clock :as clock]))
+        [drawing.utils.clock :as clock])
+  (:import (drawing.models.event Event)))
 
 (defn- -prepare-entity [entity]
   "Remove ObjectId for all items in collection"
@@ -24,3 +25,10 @@
   ([room-id sync-id]
    "Return list of events after event with the following sync-id"
    (-prepare-collection (event-dao/get-events-after room-id sync-id))))
+
+(defn apply-event-update [room-id sync-id event]
+  (event-dao/update-event room-id sync-id event)
+  (map->Event (-prepare-entity
+                (event-dao/insert-event room-id
+                                        (Event.
+                                          (clock/next-value room-id) (:id (:user (:identity @@principal))) nil "update-event" {:sync-id sync-id :data event})))))
