@@ -22,7 +22,11 @@
   "Function returns all events that occured after event with id sync-id"
   (provider/execute-query (fn [db]
                             (sort-by :sync-id
-                                     (find-maps db room-id {:sync-id {$gt (read-string sync-id)}})))))
+                                     (find-maps db room-id {$and [
+                                                             {:sync-id {$gt (read-string sync-id)}}
+                                                             {$or [ {"args.event" {$exists false}}
+                                                                   {"args.event" {$gte (read-string sync-id)}}]}
+                                                                  ]})))))
 (defn get-last-event [room-id]
   (let [events (provider/execute-query (fn [db]
                                          (with-collection db room-id

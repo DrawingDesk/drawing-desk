@@ -31,4 +31,4 @@
   (map->Event (-prepare-entity
                 (event-dao/insert-event room-id
                                         (Event.
-                                          (clock/next-value room-id) (:id (:user (:identity @@principal))) nil "update-event" {:sync-id sync-id :data event})))))
+                                          (clock/next-value room-id) (:id (:user (:identity @@principal))) nil "update-event" {:sync-id (read-string sync-id) :data event})))))
