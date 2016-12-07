@@ -10,7 +10,7 @@
     (if (nil? principal)
       (r/status {:body "User is not found"} 403)
       (let [token (security/generate-token principal)]
-        (r/response {:token token})))))
+        (r/response {:token token :user principal})))))
 
 (defn register [user-model]
   "register controller action"

@@ -10,4 +10,4 @@
   (wrap-json-response handler {}))
 
 (defn wrap-cors-request [handler]
-  (wrap-cors handler :access-control-allow-origin #".*" :access-control-allow-methods [:get :put :post :delete]))
+  (wrap-cors handler :access-control-allow-origin #".*" :access-control-allow-methods [:get :put :post :delete :patch]))
